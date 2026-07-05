@@ -1,0 +1,28 @@
+using Microsoft.EntityFrameworkCore;
+using WildfireTracker.Api.Models;
+
+namespace WildfireTracker.Api.Data;
+
+public class AppDbContext : DbContext
+{
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+    public DbSet<User> Users => Set<User>();
+    public DbSet<FireIncident> FireIncidents => Set<FireIncident>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasIndex(u => u.Email).IsUnique();
+        });
+
+        modelBuilder.Entity<FireIncident>(entity =>
+        {
+            entity.HasIndex(f => f.RiskLevel);
+            entity.HasIndex(f => f.Status);
+        });
+    }
+}
